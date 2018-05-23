@@ -31,7 +31,7 @@ static function send($signal, $object, &$data=null) {
         list($s, $callable, $check) = $sub;
         if ($s && !is_a($object, $s))
             continue;
-        elseif ($check && !call_user_func_array($check, array($object, &$data)))
+        elseif ($check && !call_user_func_array($check, array($object, $data)))
             continue;
         call_user_func_array($callable, array($object, &$data));
     }
