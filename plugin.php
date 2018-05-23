@@ -6,6 +6,6 @@ return array(
     'name' =>           'Email fields from headers',
     'author' =>         'Scand Ltd.',
     'description' =>    'Fetch fields from email headers on ticket creation.',
-    'url' =>            'https://github.com/scand/osticket-email-fields',
+    'url' =>            'https://github.com/Scandltd/osticket-email-fields',
     'plugin' =>         'class.EmailFieldsPlugin.php:EmailFieldsPlugin',
 );
