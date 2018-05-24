@@ -12,11 +12,12 @@ require_once('config.php');
 class EmailFieldsPlugin extends Plugin {
     var $config_class = 'EmailFieldsPluginConfig';
     private $columns = array();
+    private $bIsEmail = false;
 
     function bootstrap() {
-        // mail.processed occurs before ticket.create.validated during fetching emails
+        // mail.processed occurs before model.created during fetching emails
         Signal::connect('mail.processed', array($this, 'onMailProcessed'));
-        Signal::connect('ticket.create.validated', array($this, 'onTicketValidated'));
+        Signal::connect('model.created', array($this, 'onModelCreated'));
     }
 
     /**
@@ -56,21 +57,24 @@ class EmailFieldsPlugin extends Plugin {
      *  - slaId
      *  - ip
      *  - cannedResponseId
-     *
-     * @param MailFetcher $mf
-     * @param array $vars
      */
     function onMailProcessed(MailFetcher $mf, array &$vars) {
+        $this->bIsEmail = true;
         $this->parseHeaders($vars['header']);
         foreach ($this->columns as $column => $value) {
             $vars[$column] = $value;
         }
     }
 
-    function onTicketValidated($object, array &$vars) {
-        $form = TicketForm::getInstance();
-        foreach ($this->columns as $column => $value) {
-            $form->setAnswer($column, $value);
+    function onModelCreated($object, $data) {
+        if (!$this->bIsEmail) return;
+
+        if (get_class($object) == 'DynamicFormEntryAnswer') {
+            $column = $object->getField()->get('name');
+            if (isset($this->columns[$column])) {
+                $object->set('value', $this->columns[$column]);
+                $object->save();
+            }
         }
     }
 
