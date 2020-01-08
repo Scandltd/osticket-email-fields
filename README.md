@@ -20,9 +20,11 @@ X-Email-Product-Name:Scand osTicket Plugin
 topicId will be equal to 10, and product_name will be equal to 'Scand osTicket Plugin'.
 
 ## Notes
-Due to issue with passing variables by reference [#4287](https://github.com/osTicket/osTicket/issues/4287) standard fields can not be replaced by email values until but is not fixed.
+There was a bug [#4287](https://github.com/osTicket/osTicket/issues/4287). As result, standard fields can not be replaced by email values.
 
-To fix that you can manually change send() function in /include/class.signal.php file as below:
+The bug was fixed, but your version may contain old code. If you are unable to update your sources, you can manually modify the code to fix this bug.
+
+Сhange the send() function in /include/class.signal.php file as below:
 ```
 static function send($signal, $object, &$data=null) {
     if (!isset(self::$subscribers[$signal]))
